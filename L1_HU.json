@@ -10,7 +10,7 @@
         "type:hu": "megye",
         "ksh": "20",
         "osm_id": "22238",
-        "COLI": "103.94696969696945",
+        "COLI": 103.94696969696945,
         "parent": {
           "name": "Nyugat-Dunántúl",
           "type": "region",
