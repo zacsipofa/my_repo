@@ -14479,6 +14479,7 @@
         "type:hu": "megye",
         "ksh": "16",
         "osm_id": "26935",
+		    "COLI": 103.94696969696945,
         "parent": {
           "name": "Észak-Alföld",
           "type": "region",
