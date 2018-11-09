@@ -1,0 +1,14 @@
+{
+  "welcomeFile": "/MAP/index.html",
+  "authenticationMethod": "route",
+  "logout": {
+    "logoutEndpoint": "/do/logout"
+  },
+  "routes": [
+    {
+      "source": "^/MAP/(.*)$",
+      "target": "$1",
+      "localDir": "webapp"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta charset="UTF-8">
+
+		<title>MAP</title>
+		
+		<script id="sap-ui-bootstrap"
+			src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
+			data-sap-ui-libs="sap.m"
+			data-sap-ui-theme="sap_belize"
+			data-sap-ui-compatVersion="edge"
+			data-sap-ui-resourceroots='{"MAP.MAP": "./"}'>
+		</script>
+
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+
+		<script>
+			var oData = { regionProperties : [
+  {"code": "HU-ZA", "color": "rgba(120,5,10,1.0)"},
+  {"code": "HU-CS", "color": "rgba(5,12,25,1.0)"},
+  {"code": "HU-BE", "color": "rgba(5,71,102,1.0)"},
+  {"code": "HU-KE", "color": "rgba(5,71,102,1.0)"},
+  {"code": "HU-PE", "color": "rgba(5,71,102,1.0)"},
+  {"code": "HU-SZ", "color": "rgba(5,71,102,1.0)"},
+  {"code": "HU-DA", "color": "rgba(5,71,102,1.0)"}],   };
+
+// create model and set the data
+
+var oModel = new sap.ui.model.json.JSONModel();
+
+oModel.setData(oData);
+
+jQuery.sap.require("sap.ui.vbm.AnalyticMap");
+
+// set the path to the GeoJSON File. Please upload you geoJSON file to this location.
+
+sap.ui.vbm.AnalyticMap.GeoJSONURL =  "https://raw.githubusercontent.com/zacsipofa/my_repo/master/HU_COUNTY_ID.json";
+
+// create analytic map and bind to model
+
+var oVBI = new sap.ui.vbm.AnalyticMap('vbi', { width : 1024,height: 512,
+            regions :{
+                   path : "/regionProperties",
+                   template: new sap.ui.vbm.Region(
+                    { code: "{code}",color: "{color}", click: onRegionClick} )
+              }  
+            
+           });
+           
+       function onRegionClick( e )     {
+           sap.ui.vbm.AnalyticMap.GeoJSONURL =  "https://raw.githubusercontent.com/zacsipofa/my_repo/master/HU_COUNTY_ID.json";
+       };
+
+       oVBI.setModel( oModel );
+
+       oVBI.placeAt("content");
+		</script>
+	</head>
+
+	<body class="sapUiBody" id="content">
+	</body>
+
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta charset="UTF-8">
+
+		<title>MAP</title>
+		
+		<script id="sap-ui-bootstrap" src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js" data-sap-ui-libs="sap.m" data-sap-ui-theme="sap_belize" data-sap-ui-compatversion="edge" data-sap-ui-resourceroots="{&quot;MAP.MAP&quot;: &quot;./&quot;}">
+		</script>
+
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+
+		<script>
+			var oData = { regionProperties : [
+  {"code": "HU-KM", "color": "rgba(5,71,102,1.0)"},
+  {"code": "HU-KD", "color": "rgba(5,71,102,1.0)"},
+  {"code": "HU-ND", "color": "rgba(5,71,102,1.0)"},
+  {"code": "HU-DD", "color": "rgba(5,71,102,1.0)"},
+  {"code": "HU-EM", "color": "rgba(5,71,102,1.0)"},
+  {"code": "HU-EA", "color": "rgba(5,71,102,1.0)"},
+  {"code": "HU-DA", "color": "rgba(5,71,102,1.0)"}],   };
+
+// create model and set the data
+
+var oModel = new sap.ui.model.json.JSONModel();
+
+oModel.setData(oData);
+
+jQuery.sap.require("sap.ui.vbm.AnalyticMap");
+
+// set the path to the GeoJSON File. Please upload you geoJSON file to this location.
+
+sap.ui.vbm.AnalyticMap.GeoJSONURL =  "media/analyticmap/L1_HU.json";
+
+// create analytic map and bind to model
+
+var oVBI = new sap.ui.vbm.AnalyticMap('vbi', { width : 1024,height: 512,
+            regions :{
+                   path : "/regionProperties",
+                   template: new sap.ui.vbm.Region(
+                    { code: "{code}",color: "{color}", click: onRegionClick} )
+              }  
+            
+           });
+           
+       function onRegionClick( e )     {
+           sap.ui.vbm.AnalyticMap.GeoJSONURL =  "https://sapui5.hana.ondemand.com/sdk/test-resources/sap/ui/vbm/demokit/media/analyticmap/L1_US.json";
+       };
+
+       oVBI.setModel( oModel );
+
+       oVBI.placeAt("content");
+		</script>
+	<style>.facadebtn{display:inline-block;width:60px;height:60px;background-color:#009de0;border-radius:50px;text-align:center;box-shadow: 2px 2px 3px #999;opacity:.3;}
+.facadebtn .sapUiIcon{color:#FFF;font-size:1.5rem;cursor:pointer;line-height:60px;width:60px;}
+.facadebtn:hover{opacity:1;}
+#interactive.viewport video{width:320px;height:240px;}
+.facade .sapMSLITitleOnly, .facade .sapMILILabel {font-size: 1rem;}
+#interactive.viewport .drawingBuffer{width:320px;height:240px;position:absolute;}
+</style>
+<script type="text/javascript">
+
+window._facadeSettings = {"cordova-plugin-device-orientation":false,"accelerometer":{},"compass":{}};
+	window.sIdeOrigin = "https://webidecp-p2000450427trial.dispatcher.hanatrial.ondemand.com";
+	window.sap_webide_FacadePreview = true;
+	window.sFacadePath = "https://webidecp-p2000450427trial.dispatcher.hanatrial.ondemand.com/hatdi_uf2d18766/hybrid/cordovafacade/cordova.js";
+	window.sFacadeCfgViewPath = "https://webidecp-p2000450427trial.dispatcher.hanatrial.ondemand.com/hatdi_uf2d18766/hybrid/view/";
+	window.bridgeHtml = "https://webidecp-p2000450427trial.dispatcher.hanatrial.ondemand.com/hatdi_uf2d18766/hybrid/cordovafacade/MessageBridge.html";
+	window.msgDefPath = "https://webidecp-p2000450427trial.dispatcher.hanatrial.ondemand.com/hatdi_uf2d18766/hybrid/mobileextend/MessageDef.js";
+	window.msgBridgePath = "https://webidecp-p2000450427trial.dispatcher.hanatrial.ondemand.com/hatdi_uf2d18766/hybrid/mobileextend/MessageBridge.js";
+	window.meCssPath = "https://webidecp-p2000450427trial.dispatcher.hanatrial.ondemand.com/hatdi_uf2d18766/hybrid/css/mobileExtend.css";
+</script>
+<script src="https://webidecp-p2000450427trial.dispatcher.hanatrial.ondemand.com/hatdi_uf2d18766/hybrid/cordovafacade/floatingButton.js" type="text/javascript"></script>
+</head>
+
+	<body class="sapUiBody" id="content">
+	</body>
+
+</html>
