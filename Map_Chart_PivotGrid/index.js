@@ -246,14 +246,6 @@ DemoApp.controller('DemoController', function DemoController($scope, $http) {
 
 	//click on map
 	stateLayer.addListener('click', function (e) {
-		/*
-		infoWindow.setContent('<div style="line-height:1.00;overflow:hidden;white-space:nowrap;">' +
-			e.feature.getProperty('name'));
-
-		var anchor = new google.maps.MVCObject();
-		anchor.set("position", e.latLng);
-		infoWindow.open(vm.map, anchor);*/
-
 		stateLayer.revertStyle();
 		stateLayer.overrideStyle(e.feature, {
 			fillColor: '#ff7a08',
@@ -544,7 +536,6 @@ DemoApp.controller('DemoController', function DemoController($scope, $http) {
 		}
 
 		if (table_click == true) {
-			//switch_param = switch_param.text;
 			switch_param = temp_switch_param;
 		}
 
