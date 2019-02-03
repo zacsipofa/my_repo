@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script id="sap-ui-bootstrap"
+    src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
+    data-sap-ui-libs="sap.m, sap.ui.table"
+    data-sap-ui-theme="sap_belize"
+    data-sap-ui-compatVersion="edge"
+	data-sap-ui-resourceroots='{"MAP.MAP": "./"}' >
+    </script>
+
+    <script>
+        var oTable = new sap.ui.table.TreeTable({
+            columns : [ new sap.ui.table.Column({
+            label : "REGIO",
+            template : "REGIO"
+            }), new sap.ui.table.Column({
+            label : "MEGYE",
+            template : "MEGYE"
+            }), new sap.ui.table.Column({
+            label : "TELEPULES",
+            template : "TELEPULES"
+            }), new sap.ui.table.Column({
+            label : "MENNYISEG",
+            template : "MENNYISEG"
+            }) ],
+            selectionMode : sap.ui.table.SelectionMode.Single,
+            //enableColumnReordering : true,
+        });
+
+        var flatData = null;
+        var all = [];
+        var DelAlfold = [{MEGYE:"Bács-Kiskun megye", t:[]}];
+        var DelDunantul = [{MEGYE:"Baranya megye", t:[]}];
+        var BacsKisKun = [];
+        var TelepulesMennyiseg = [{
+            TELEPULES : "",
+            MENNYISEG : 0
+        }];
+        
+        var oModel = new sap.ui.model.json.JSONModel()
+        oModel.loadData("IngatlanokOData40k.json");
+        oModel.attachRequestCompleted(function(oEventModel){
+            
+            var i;
+            var ertHuf = 0;
+            var currRow;
+            var da = 0;
+            var dd = 0;
+            var megy;
+            var tel;
+            var tel_meny = 0;
+
+
+            for (i = 0; i<oModel.oData.d.results.length-2; ++i)
+            {
+                if(oModel.oData.d.results[i].REGIO == "Dél-Alföld régió")
+                {
+                    if(oModel.oData.d.results[i].MEGYE == oModel.oData.d.results[i+1].MEGYE)
+                    {
+                        if(oModel.oData.d.results[i].TELEPULES == oModel.oData.d.results[i+1].TELEPULES)
+                        {
+                            tel_meny += oModel.oData.d.results[i].MENNYISEG;
+                        }
+                        else
+                        {
+                            megy = oModel.oData.d.results[i].MEGYE;
+                            tel = oModel.oData.d.results[i].TELEPULES;
+                            tel_meny += oModel.oData.d.results[i].MENNYISEG;
+                            DelAlfold[da].t.push({MEGYE:megy ,TELEPULES:tel, MENNYISEG:tel_meny});
+                            TelepulesMennyiseg.TELEPULES = "";
+                            TelepulesMennyiseg.MENNYISEG = 0;
+                        }
+                    }
+                    else if(oModel.oData.d.results[i+1].REGIO == "Dél-Alföld régió")
+                    {
+                        megy = oModel.oData.d.results[i+1].MEGYE;
+                        DelAlfold.push({MEGYE:megy, t:[]});
+                        ++da;
+                    }
+                    
+                }
+                else if(oModel.oData.d.results[i].REGIO == "Dél-Dunántúl régió")
+                {
+                    if(oModel.oData.d.results[i].MEGYE == oModel.oData.d.results[i+1].MEGYE)
+                    {
+                        if(oModel.oData.d.results[i].TELEPULES == oModel.oData.d.results[i+1].TELEPULES)
+                        {
+                            tel_meny += oModel.oData.d.results[i].MENNYISEG;
+                        }
+                        else
+                        {
+                            megy = oModel.oData.d.results[i].MEGYE;
+                            tel = oModel.oData.d.results[i].TELEPULES;
+                            tel_meny += oModel.oData.d.results[i].MENNYISEG;
+                            DelDunantul[dd].t.push({MEGYE:megy ,TELEPULES:tel, MENNYISEG:tel_meny});
+                            TelepulesMennyiseg.TELEPULES = "";
+                            TelepulesMennyiseg.MENNYISEG = 0;
+                        }
+                    }
+                    else
+                    {
+                        megy = oModel.oData.d.results[i+1].MEGYE;
+                        DelDunantul.push({MEGYE:megy, t:[]});
+                        ++dd;
+                    }
+                    
+                }
+            }
+            console.log(DelAlfold);
+            console.log(DelDunantul);
+            all.push({REGIO:"Dél-Alföld régió", t:DelAlfold});
+            all.push({REGIO:"Dél-Dunántúl régió", t:DelDunantul});
+            var nodesModel = new sap.ui.model.json.JSONModel();
+            nodesModel.setData({nodeRoot: all});
+            oTable.setModel(nodesModel);
+            oTable.bindRows({
+                path : "/",
+                parameters : {
+                expand : "nodeRoot",
+                navigation : {
+                'nodeRoot' : 'all',
+                }
+                }
+            });
+            console.log(nodesModel);
+
+//Map
+            var oData = { regionProperties : [
+            {"code": "HU-PE", "color": "rgba(5,71,102,1.0)"},
+            {"code": "HU-SZ", "color": "rgba(5,71,102,1.0)"}],};
+            jQuery.sap.require("sap.ui.vbm.AnalyticMap");
+
+            sap.ui.vbm.AnalyticMap.GeoJSONURL =  "https://raw.githubusercontent.com/zacsipofa/my_repo/master/HU_COUNTY_ID.json";
+
+            var oVBI = new sap.ui.vbm.AnalyticMap('vbi', { width : 1024,height: 512,
+            regions :{
+                   path : "/regionProperties",
+                   template: new sap.ui.vbm.Region(
+                    { code: "{code}",color: "{color}", click: onRegionClick} )
+            }  
+           });
+           
+            function onRegionClick( e )     {
+                sap.ui.vbm.AnalyticMap.GeoJSONURL =  "https://raw.githubusercontent.com/zacsipofa/my_repo/master/HU_COUNTY_ID.json";
+            };
+
+            oVBI.setInitialZoom(7);
+            oVBI.setInitialPosition("20.20;47.00;0");
+
+            oTable.placeAt("content");
+            oVBI.placeAt("content");
+        });
+    </script>
+</head>
+<body class="sapUiBody" id="content">
+    
+</body>
+</html>

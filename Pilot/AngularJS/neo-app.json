@@ -1,0 +1,10 @@
+{
+	"routes": [{
+		"path": "/ingatlanokodata",
+		"target": {
+			"type": "destination",
+			"name": "ingatlanokodata"
+		},
+		"description": "ingatlanokodata"
+	}]
+}
